@@ -9,7 +9,13 @@ This repository documents how to install and use **Circos** to visualize genomic
 ml miniconda3/24.3.0
 
 conda create --prefix /directory/saved/circos_env -c conda-forge circos
+source /apps/spack-managed/gcc-11.3.1/miniconda3-24.3.0-tfxfbqlz7yglkzf3fhpokdrwkakbluqw/etc/profile.d/conda.sh
 source ~/.bashrc
+conda activate /directory/saved/circos_env
+
+or
+
+source /apps/spack-managed/gcc-11.3.1/miniconda3-24.3.0-tfxfbqlz7yglkzf3fhpokdrwkakbluqw/etc/profile.d/conda.sh
 conda activate /directory/saved/circos_env
 ```
 
