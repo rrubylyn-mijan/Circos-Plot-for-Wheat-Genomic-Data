@@ -6,6 +6,8 @@ This repository documents how to install and use **Circos** to visualize genomic
 
 ## 1. Install Circos (Conda Environment)
 ```bash
+ml miniconda3/24.3.0
+
 conda create --prefix /directory/saved/circos_env -c conda-forge circos
 source ~/.bashrc
 conda activate /directory/saved/circos_env
