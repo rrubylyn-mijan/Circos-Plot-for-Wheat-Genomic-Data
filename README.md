@@ -1,6 +1,6 @@
 # Circos Plot for Wheat Genomic Data
 
-This repository documents how to install and use **Circos** to visualize genomic features (GC content, gene density, custom layers) for wheat genomes (Glenn and Sumai3) on HPC systems like Atlas/CCAST.
+This repository documents how to install and use **Circos** to visualize genomic features (GC content, gene density, custom layers) for wheat genomes on HPC systems like Atlas/CCAST.
 
 ---
 
