@@ -18,7 +18,7 @@ conda activate /directory/saved/circos_env
 ```bash
 cd /directory/this/saved/circos_plot/
 
-### Example config (6heatmap_circos_wheat.conf):
+### Example config (heatmap_circos_wheat.conf):
 
 # ideogram
 <ideogram>
