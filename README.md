@@ -229,8 +229,8 @@ ideogram   = yes
 </highlights>
 ```
 
-
 Maintainer:
+
 Ruby Mijan
 
 
