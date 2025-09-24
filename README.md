@@ -108,6 +108,26 @@ x_sumai3_gc_content_density_extracted.bed
 scp firstname.lastname@atlas-login.hpc.msstate.edu:/directory/this/saved/circos_plot_sumai3/circos_wheat_17.png C:\Users\firstname.lastname\Documents\Circos_plot\
 ```
 
+# Data to prepare for Circos layers
+To visualize genome assemblies with Circos, all feature data (such as gene density, GC content, repeat content, or custom annotations) must first be extracted and formatted into tab-delimited BED‐like files. Each file should include at minimum the chromosome name, start coordinate, end coordinate, and an optional value or category for coloring or thickness. Separate files should be prepared for each layer you intend to plot (e.g., one file for GC content, another for gene density, another for repeats). These preprocessed files are then referenced in the Circos configuration (.conf) files under <highlights>, <plots>, or <heatmaps> to build multi-layer circular visualizations.
+
+## 1. Karyotype file
+The karyotype file lists each chromosome (ta1A–ta7D) with its size and an RGB color. This file is referenced in your Circos configuration under `karyotype = x1-wheat-karyotype`.
+```bash
+- **Columns:**  
+  - `chr` – keyword indicating a chromosome line  
+  - `-` – placeholder  
+  - `ta1A` – internal ID used in Circos  
+  - `1A` – label displayed in the plot  
+  - `0` – start coordinate  
+  - `603896264` – chromosome length (bp)  
+  - `137,236,218` – RGB color  
+
+This file must be saved in your Circos plot directory, e.g.:  
+`/directory/this/saved/circos_plot_wheat/x1-wheat-karyotype`.
+```
+
+
 Maintainer:
 Ruby Mijan
 
