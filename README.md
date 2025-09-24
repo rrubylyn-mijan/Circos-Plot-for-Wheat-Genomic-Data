@@ -133,8 +133,8 @@ This workflow searches for the **A6-10 subtelomeric tandem repeat** (AY249980.1)
 ### Setup & Query FASTA
 ```bash
 # Work dir
-mkdir -p /directory/this/saved/subtelomeric_tandem_repeats
-cd /directory/this/saved/subtelomeric_tandem_repeats
+mkdir -p /directory/this/saved/subtelomeric-tandem-repeats
+cd /directory/this/saved/subtelomeric-tandem-repeats
 
 # Create query FASTA (AY249980.1 Aegilops tauschii clone A6-10)
 nano AY249980.1.fasta
