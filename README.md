@@ -162,7 +162,7 @@ ml blast-plus/2.14.1
 makeblastdb -in /where/this/saved/Wheat_pm_v1.fasta  -dbtype nucl -out Wheat_db
 
 # Run BLASTN (tabular outfmt 6)
-blastn -query AY249980.1.fasta -db Wheat_db  -out Wheat_A6-10_hits.txt  -evalue 1e-10 -outfmt 6
+blastn -query AY249980.1.fasta -db Wheat_db  -out wheat_A6-10_hits.txt  -evalue 1e-10 -outfmt 6
 ```
 
 ### Filter High-Identity Hits at Chromosome Ends
@@ -190,7 +190,7 @@ awk '$3 >= 91 && $3 <= 100 && \
  ($2 == "chr7A" && ($9 <= 100000000 || $9 >= 649415582)) || \
  ($2 == "chr7B" && ($9 <= 100000000 || $9 >= 668511397)) || \
  ($2 == "chr7D" && ($9 <= 100000000 || $9 >= 558343710))) \
-{print $2, $9, $10}' Wheat_A6-10_hits.txt > wheat_filtered_output_100Mb.txt
+{print $2, $9, $10}' wheat_A6-10_hits.txt > wheat_filtered_output_100Mb.txt
 ```
 
 ### Rename chr* → ta* and Add Circos fill_color=
