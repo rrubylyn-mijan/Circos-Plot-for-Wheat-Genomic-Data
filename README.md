@@ -203,20 +203,20 @@ sed -e 's/chr1A/ta1A/g' -e 's/chr1B/ta1B/g' -e 's/chr1D/ta1D/g' \
     -e 's/chr5A/ta5A/g' -e 's/chr5B/ta5B/g' -e 's/chr5D/ta5D/g' \
     -e 's/chr6A/ta6A/g' -e 's/chr6B/ta6B/g' -e 's/chr6D/ta6D/g' \
     -e 's/chr7A/ta7A/g' -e 's/chr7B/ta7B/g' -e 's/chr7D/ta7D/g' \
-    sumai3_filtered_output_100Mb.txt > wheat_sumai3_filtered_output_100Mb.txt
+    wheat_filtered_output_100Mb.txt > wheat_filtered_output_100Mb.txt
 
 # Add Circos highlight color (teal = 0,128,128)
-awk '{print $1, $2, $3, "fill_color=0,128,128"}' updated_wheat_filtered_output_100Mb.txt \
-  > x2-final-wheat-filtered-output-100Mb
+awk '{print $1, $2, $3, "fill_color=0,128,128"}' updated-wheat-filtered-output-100Mb.txt \
+  > updated-wheat-filtered-output-100Mb.txt
 
 # (Optional) Simpler (no end-zone filter) path:
 # sed ... wheat_filtered_output.txt > updated_wheat_filtered_output.txt
-# awk '{print $1, $2, $3, "fill_color=0,128,128"}' updated_wheat_filtered_output.txt > x_subtelo_wheat_filtered_output.txt
+# awk '{print $1, $2, $3, "fill_color=0,128,128"}' updated-wheat-filtered-output-100Mb.txt > x2-subtelo-wheat-filtered-output-100Mb
 ```
 
 ### Move Highlights File to Circos Project
 ```bash
-cp x_final_wheat_filtered_output_100Mb.txt /directory/this/saved/circos_plot_wheat/
+cp x2-subtelo-wheat-filtered-output-100Mb /directory/this/saved/circos_plot_wheat/
 ```
 In your Circos .conf:
 ```bash
