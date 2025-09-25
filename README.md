@@ -288,6 +288,18 @@ cd /directory/this/saved/subtelomeric-tandem-repeats
 blastn -query combined-fasta-centromere -db Wheat_db  -out combined-centromere-wheat_hits.txt  -evalue 1e-10 -outfmt 6 -num_threads 20
 ```
 
+### Filter Specific Hits on Wheat chromosome
+To identify only the highest and lowest positions for Wheat on chrromosome with high identity (95–100%), length >1000, and coordinates beginning with n* or n* Mb:
+```bash
+# Highest coordinate
+awk '$2 == "chr7*" && $3 >= 95 && $3 <= 100 && $4 > 1000 && ($9 ~ /^n*/ || $10 ~ /^n*/ || $9 ~ /^n*/ || $10 ~ /^n*/) {print $9; print $10}' \
+  combined_centromere_wheat_hits.txt | sort -n | tail -1
+
+# Lowest coordinate
+awk '$2 == "chr7*" && $3 >= 95 && $3 <= 100 && $4 > 1000 && ($9 ~ /^n*/ || $10 ~ /^n*/ || $9 ~ /^n*/ || $10 ~ /^n*/) {print $9; print $10}' \
+  combined_centromere_wheat_hits.txt | sort -n | head -1
+```
+
 ### Extract 100% Identity Hits (Sumai 3 example)
 ```bash
 # Keep exact matches (100% identity); output: query_id, subject_chr, sstart, send, evalue
@@ -304,6 +316,20 @@ sed -e 's/chr1A/ta1A/g' -e 's/chr1B/ta1B/g' -e 's/chr1D/ta1D/g' \
     -e 's/chr6A/ta6A/g' -e 's/chr6B/ta6B/g' -e 's/chr6D/ta6D/g' \
     -e 's/chr7A/ta7A/g' -e 's/chr7B/ta7B/g' -e 's/chr7D/ta7D/g' \
     centromere-wheat-100percent-hits > updated-centromere-wheat-100percent-hits
+```
+
+### Prepare your data for layer 2
+```bash
+# Example of the file
+nano x3-centromere-glenn-highlights
+
+ta1A	0	201260369	fill_color=aquamarine
+ta1A	201260370	219476881	fill_color=teal
+ta1A	219476882	603896264	fill_color=aquamarine
+ta1B	0	254692168	fill_color=aquamarine
+ta1B	254692169	264373010	fill_color=teal
+ta1B	264373011	710210752	fill_color=aquamarine
+ta1D	0	230211361	fill_color=aquamarine
 ```
 
 ### Keep Only chr/ta & Coordinates; Add Circos Color
@@ -330,6 +356,33 @@ fill_color = yes
 ideogram   = yes
 </highlight>
 </highlights>
+```
+
+## 3. Noncoding gene dentsity (infernal RNAs)
+# Assuming you already generated updated_wheat_ncrna.bed (chrom  start  end),
+# this command aggregates non-coding RNA counts into 100 kb windows for Circos:
+
+```bash
+awk -v bin_size=100000 '
+{
+  start_bin = int($2 / bin_size) * bin_size
+  end_bin   = int($3 / bin_size) * bin_size
+  for (bin = start_bin; bin <= end_bin; bin += bin_size) {
+    density[$1][bin]++
+  }
+}
+END {
+  for (chrom in density) {
+    for (bin in density[chrom]) {
+      print chrom, bin, bin + bin_size - 1, density[chrom][bin]
+    }
+  }
+}' updated_wheat_ncrna.bed | sort -k1,1 -k2,2n > x4-ncrna-glenn-100kb-windows
+
+# Example file
+ta1A 0 99999 33
+ta1A 100000 199999 34
+ta1A 200000 299999 6
 ```
 
 
