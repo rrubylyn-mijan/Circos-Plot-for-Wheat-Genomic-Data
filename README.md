@@ -229,6 +229,111 @@ ideogram   = yes
 </highlights>
 ```
 
+## 3. Centromere-Like Tandem Repeats (Aegilops tauschii 6C6-3/6C6-4) — BLASTN & Circos Prep
+
+This workflow finds **centromere-associated tandem repeats** in wheat assemblies using **BLASTN** and prepares **Circos** highlight files (BED-like with `fill_color=`).
+
+---
+
+### Combine Centromeric Repeat Sequences
+```bash
+mkdir -p /directory/this/saved/subtelomeric-tandem-repeats
+cd /directory/this/saved/subtelomeric-tandem-repeats
+
+nano combined-fasta-centromere
+
+>AY249981.1 Aegilops tauschii clone 6C6-4 centromere-specific tandem repeat sequence
+TTCGCCCTTGAATGGACAACAGCATTTAAAACTAAATTTGGTTTATATGAGTGGTTAGTCATGCCTTTTG
+GGTTAACTAATGCACCTAGTACTTTCATGAGACTAATGAACGAAGTTTTACGTGCTTTCATTGGATGATT
+TGTGGTAGTCTATTGTGATGATATACTGATTTATAGCAAATCTTTGGAAGAACATTTGGAACATTTACGC
+GCTGTTTTTATTGCTCTACGTGATGCATGTTTGTTTGGTAACCTTGGGAAGTGCACCTTTTGCACCGACC
+GAGTATCTTTTCTTGGCTATGTTGTTACTCCACAGGGAATTCAAGTTGGTAAAGCCAAGATTGAAGCTAT
+TGAGAGTTGGCCGCAGCCCAAAACGGTCACACAAGTGCGGAGTTTTCTTGGACTCGCTGGTTTCTATAGG
+CGTTTTGTGAGAGATTTTAGCACCATCGCTGCACCTCTCAACGAGCTTACAAAGAAGGATGTGCCTTTTG
+TTTGGGGTACCGCACAGGAAGAAGCCTTCACGGTATTGAAAGATAAGTTGACACATGCTCCTTTACTCCA
+ACTTCCTGATTTTAATAAGACTTTTGAGCTTGAATGTGATGCTAGTGGCATTGGATTAGGAGGTGTGTTA
+TTACAAGATGGCAAACCTGTTGCATATTTTTCTGAAAAATTGAGTGGGCCTAGTCTGAATTATTCTACTT
+ATGATAAAGAACTATATGCTCTTGTTCGGACTTTAGAAACATGGCAACATTATTTATGGCCCAAAGAATT
+TGTTATACATTCTGATCATGAATCTTTGAAACATATTAAAAGTCAAGCTAAACTGAATCGTAGACATGCT
+AAATGGGTTGAATTCATTGAAACTTTCCCTTATGTCATTAAACACAAGAAGGGTAAAGAAAATGTTATTG
+CTGATGCATTGTCTCGTCGCTATACTATGCTTTCACAAATTGACTTCAAAATATTTGGTTTGGAGACCAT
+TAAAGATCAATATGTGCATGATGCTGATTTTAAAGATGTATTGCAGAATTGTAAAGAAGGATGAACCTGG
+AAACAGTTTGTCG
+>AY249982.1 Aegilops tauschii clone 6C6-3 centromere-specific tandem repeat sequence
+ATTCGCCCTTACCCGCCTGCATCTTCTACTTCCACTGCACCAGCACATCCATCAGGTTCCACCTCTAGCC
+GTGATACAAGAAAGCAGGCACAACCACCACTATCTGCCAAGAGCGCACCTGCCGGGCCTGCACAGAGCTC
+TTCTTCTTCCATGGCACCGACAGGGCACACAAGTGATATTATTTGTCGTCGTTGTAAGGGAAGAGGACAT
+TATGCGAGAGAATGCAAATCTCAGCGTGTAATGATTGCTACTGAGGATGGTGGGTATGAGTCCGCTAGTG
+ACTATGATGAGGAGACTTTGGCTCTTATTACACGTGAAGAACATGGTGGAGATGATTCTGAAAATGAGAC
+GCAATACATGGCTCCTGAAGACGCTGACAGGTATGAATGTTTAGTTGCTCAACGTGTTTTGAGTGTGCAG
+GTCACACAAGCAGAGCAAAATCAGAGGCATAATTTGTTCCATACAAAGGGAGTTGTGAAGGAACGTTCTG
+TTCGCGTCATCATAGATGGAGGGAGCTGTAACAACTTGGCTAGCATGGAGATGGTGGAGAAGCTATCTCT
+CACCACAAGACCACATCCACATCCTTACTACATCCAACGGTTCAACAACAGCGGCAAGGTTAAGGTAACA
+CGTACTGTTCGTGTGCATTTTAGTATCTCTACATATGCTGATTATGTTGATTGTGATGTGGTACCCATGC
+AAGCATGTTCCTTATTACTTGGTAGACCATGGCAATTTGATAAAAATTCTGTACACCATGGTAGAAACAA
+TCAGTATACTCTTGTTCATAAGGATAAAAATATTACTTTGCTTCCTATGACTCCTGATTCCATTTTGAAA
+GATGACATTAATAGAGCTAATAAAGCAAAAACAGGAGAAAAATAAGAGTGAAAATCAGATTGTGGCAAAA
+GAATTTGAGCAACAAATGAAACTTAATAATAAACCATCTAGTGTTGTTTCTGAAATTAAATTGAAAAGTG
+CATGTTTACTTGCCACAAAATCTGATATTGATGAGCTAGATTTCAGCAAATCTGTTTGCTATGCTTTTGT
+GTGCAAAGTAGGGCGATTATTTTAAGGGGCGGAA
+```
+
+### BLAST+: Search Against Each Genome
+Reuse the databases you already made (Wheat_db). If needed, create them with makeblastdb first.
+```bash
+ml blast-plus/2.14.1
+
+cd /directory/this/saved/subtelomeric-tandem-repeats
+
+blastn -query combined-fasta-centromere -db Wheat_db  -out combined-centromere-wheat_hits.txt  -evalue 1e-10 -outfmt 6 -num_threads 20
+```
+
+### Extract 100% Identity Hits (Sumai 3 example)
+```bash
+# Keep exact matches (100% identity); output: query_id, subject_chr, sstart, send, evalue
+awk '$3 == 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt \
+  > centromere-wheat-100percent-hits
+```
+
+### Rename chr* → ta* for Circos Karyotype IDs
+```bash
+sed -e 's/chr1A/ta1A/g' -e 's/chr1B/ta1B/g' -e 's/chr1D/ta1D/g' \
+    -e 's/chr2A/ta2A/g' -e 's/chr2B/ta2B/g' -e 's/chr2D/ta2D/g' \
+    -e 's/chr3A/ta3A/g' -e 's/chr3B/ta3B/g' -e 's/chr3D/ta3D/g' \
+    -e 's/chr4A/ta4A/g' -e 's/chr4B/ta4B/g' -e 's/chr4D/ta4D/g' \
+    -e 's/chr5A/ta5A/g' -e 's/chr5B/ta5B/g' -e 's/chr5D/ta5D/g' \
+    -e 's/chr6A/ta6A/g' -e 's/chr6B/ta6B/g' -e 's/chr6D/ta6D/g' \
+    -e 's/chr7A/ta7A/g' -e 's/chr7B/ta7B/g' -e 's/chr7D/ta7D/g' \
+    centromere-wheat-100percent-hits > updated-centromere-wheat-100percent-hits
+```
+
+### Keep Only chr/ta & Coordinates; Add Circos Color
+```bash
+# Keep subject chr (now ta*), start, end
+awk '{print $2, $3, $4}' updated-centromere-wheat-100percent-hits \
+  > x-centromere-wheat-100percent-hits
+
+# Add a color tag for Circos highlights (e.g., orange)
+awk '{print $1, $2, $3, "fill_color=176,72,103"}' x-centromere-wheat-100percent-hits \
+  > x3-centromere-wheat-highlights
+```
+
+### Move Highlights File to Circos Project
+```bash
+cp x3-centromere-wheat-highlights /directory/this/saved/circos_plot_wheat/
+```
+In your Circos .conf:
+```bash
+<highlights>
+<highlight>
+file       = x3-centromere-wheat-highlights
+fill_color = yes
+ideogram   = yes
+</highlight>
+</highlights>
+```
+
+
 Maintainer:
 
 Ruby Mijan
