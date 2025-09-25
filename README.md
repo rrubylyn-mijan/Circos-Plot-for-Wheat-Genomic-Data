@@ -291,8 +291,7 @@ blastn -query combined-fasta-centromere -db Wheat_db  -out combined-centromere-w
 ### Extract 100% Identity Hits (Sumai 3 example)
 ```bash
 # Keep exact matches (100% identity); output: query_id, subject_chr, sstart, send, evalue
-awk '$3 == 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt \
-  > centromere-wheat-100percent-hits
+awk '$3 == 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt > centromere-wheat-100percent-hits
 ```
 
 ### Rename chr* → ta* for Circos Karyotype IDs
