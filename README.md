@@ -359,8 +359,8 @@ ideogram   = yes
 ```
 
 ## 3. Noncoding gene dentsity (infernal RNAs)
-# Assuming you already generated updated_wheat_ncrna.bed (chrom  start  end),
-# this command aggregates non-coding RNA counts into 100 kb windows for Circos:
+### Assuming you already generated updated_wheat_ncrna.bed (chrom  start  end),
+### this command aggregates non-coding RNA counts into 100 kb windows for Circos:
 
 ```bash
 awk -v bin_size=100000 '
@@ -385,6 +385,23 @@ ta1A 100000 199999 34
 ta1A 200000 299999 6
 ```
 
+## 3. Noncoding gene dentsity (infernal RNAs)
+### Assuming you already generated wheat.fasta.2.7.7.80.10.50.500.dat,
+### this command prepare BED Files for Genome-wide Density (Circos):
+
+```bash
+awk '/Sequence:/ {chr=$2} /^[0-9]/ {print chr"\t"($1-1)"\t"$2}' wheat.fasta.2.7.7.80.10.50.500.dat > wheat_tandem_repeats.bed
+
+# Make windows:
+ml bedtools2/2.31.1
+bedtools makewindows -g wheat.fasta.fai -w 1000000 > wheat_genome_1Mb_windows.bed
+
+# Coverage:
+bedtools coverage -a wheat_genome_1Mb_windows.bed -b wheat_tandem_repeats.bed > wheat_tandem_repeat_density.txt
+
+# Format for Circos:
+awk '{gsub(/^chr/, "ta", $1); print $1, $2, $3, $7}' wheat_tandem_repeat_density.txt > x5_tandem_repeat_density_wheat
+```
 
 Maintainer:
 
