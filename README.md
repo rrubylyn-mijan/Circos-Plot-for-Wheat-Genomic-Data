@@ -303,7 +303,26 @@ awk '$3 >= 95 && $3 <= 100 {print $1, $2, $9, $10, $11}' combined-centromere-whe
 awk '$2 == "chr1A"' centromere-rollag-95-100percent-hits.txt
 ```
 
-To identify only the highest and lowest positions for Wheat on chrromosome with high identity (95–100%), length >1000, and coordinates beginning with n* or n* Mb:
+### Counts how many coordinates start with each prefix e.g. 20–29
+```bash
+awk '
+$2=="chr1A" && $3>=95 && $3<=100 && $4>1000 {
+  for (i=9; i<=10; i++) {
+    if ($i ~ /^2[0-9]/) {
+      prefix = substr($i,1,2)
+      count[prefix]++
+    }
+  }
+}
+END {
+  print "---- Counts by prefix ----"
+  for (p=20; p<=29; p++) {
+    printf "%2d*: %d\n", p, count[p]+0
+  }
+}' combined-centromere-wheat_hits.txt
+```
+
+### To identify only the highest and lowest positions for Wheat on chrromosome with high identity (95–100%), length >1000, and coordinates beginning with n* or n* Mb:
 ```bash
 awk '
 $2=="chr1A" && $3>=95 && $3<=100 && $4>1000 {
