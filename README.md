@@ -237,8 +237,8 @@ This workflow finds **centromere-associated tandem repeats** in wheat assemblies
 
 ### Combine Centromeric Repeat Sequences
 ```bash
-mkdir -p /directory/this/saved/subtelomeric-tandem-repeats
-cd /directory/this/saved/subtelomeric-tandem-repeats
+mkdir -p /directory/this/saved/centromeric-tandem-repeats
+cd /directory/this/saved/centromeric-tandem-repeats
 
 nano combined-fasta-centromere
 
