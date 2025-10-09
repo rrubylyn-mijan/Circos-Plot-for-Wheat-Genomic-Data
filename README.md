@@ -289,24 +289,34 @@ blastn -query combined-fasta-centromere -db Wheat_db  -out combined-centromere-w
 ```
 
 ### Filter Specific Hits on Wheat chromosome
-To identify only the highest and lowest positions for Wheat on chrromosome with high identity (95–100%), length >1000, and coordinates beginning with n* or n* Mb:
-```bash
-# Highest coordinate
-awk '$2 == "chr7*" && $3 >= 95 && $3 <= 100 && $4 > 1000 && ($9 ~ /^n*/ || $10 ~ /^n*/ || $9 ~ /^n*/ || $10 ~ /^n*/) {print $9; print $10}' \
-  combined_centromere_wheat_hits.txt | sort -n | tail -1
-
-# Lowest coordinate
-awk '$2 == "chr7*" && $3 >= 95 && $3 <= 100 && $4 > 1000 && ($9 ~ /^n*/ || $10 ~ /^n*/ || $9 ~ /^n*/ || $10 ~ /^n*/) {print $9; print $10}' \
-  combined_centromere_wheat_hits.txt | sort -n | head -1
-```
-
-### Extract 100% Identity Hits
+### Extract % Identity Hits
 ```bash
 # Keep exact matches (100% identity); output: query_id, subject_chr, sstart, send, evalue
 awk '$3 == 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt > centromere-wheat-100percent-hits
 
 # For 95–100% identity
 awk '$3 >= 95 && $3 <= 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt > centromere-wheat-95-100percent-hits.txt
+```
+
+### Print lines for chromosomes 
+```bash
+awk '$2 == "chr1A"' centromere-rollag-95-100percent-hits.txt
+```
+
+To identify only the highest and lowest positions for Wheat on chrromosome with high identity (95–100%), length >1000, and coordinates beginning with n* or n* Mb:
+```bash
+awk '
+$2=="chr1A" && $3>=95 && $3<=100 && $4>1000 {
+  if ($9 ~ /^21[0-9]/ || $10 ~ /^21[0-9]/) {
+    if (min=="" || $9<min) min=$9
+    if (min=="" || $10<min) min=$10
+  }
+  if ($9 ~ /^22[0-9]/ || $10 ~ /^22[0-9]/) {
+    if (max=="" || $9>max) max=$9
+    if (max=="" || $10>max) max=$10
+  }
+}
+END {print "Lowest (21*):", min; print "Highest (22*):", max}' combined-centromere-wheat_hits.txt
 ```
 
 ### Rename chr* → ta* for Circos Karyotype IDs
