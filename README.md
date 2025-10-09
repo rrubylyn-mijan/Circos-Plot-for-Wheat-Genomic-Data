@@ -283,7 +283,7 @@ Reuse the databases you already made (Wheat_db). If needed, create them with mak
 ```bash
 ml blast-plus/2.14.1
 
-cd /directory/this/saved/subtelomeric-tandem-repeats
+cd /directory/this/saved/centromeric-tandem-repeats
 
 blastn -query combined-fasta-centromere -db Wheat_db  -out combined-centromere-wheat_hits.txt  -evalue 1e-10 -outfmt 6 -num_threads 20
 ```
