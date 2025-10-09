@@ -300,10 +300,13 @@ awk '$2 == "chr7*" && $3 >= 95 && $3 <= 100 && $4 > 1000 && ($9 ~ /^n*/ || $10 ~
   combined_centromere_wheat_hits.txt | sort -n | head -1
 ```
 
-### Extract 100% Identity Hits (Sumai 3 example)
+### Extract 100% Identity Hits
 ```bash
 # Keep exact matches (100% identity); output: query_id, subject_chr, sstart, send, evalue
 awk '$3 == 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt > centromere-wheat-100percent-hits
+
+# For 95–100% identity
+awk '$3 >= 95 && $3 <= 100 {print $1, $2, $9, $10, $11}' combined-centromere-wheat_hits.txt > centromere-wheat-95-100percent-hits.txt
 ```
 
 ### Rename chr* → ta* for Circos Karyotype IDs
