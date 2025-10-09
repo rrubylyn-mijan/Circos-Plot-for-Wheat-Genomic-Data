@@ -300,7 +300,7 @@ awk '$3 >= 95 && $3 <= 100 {print $1, $2, $9, $10, $11}' combined-centromere-whe
 
 ### Print lines for chromosomes 
 ```bash
-awk '$2 == "chr1A"' centromere-rollag-95-100percent-hits.txt
+awk '$2 == "chr1A"' centromere-wheat-95-100percent-hits.txt
 ```
 
 ### Counts how many coordinates start with each prefix e.g. 20–29
