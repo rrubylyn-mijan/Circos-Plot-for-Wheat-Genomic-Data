@@ -465,6 +465,37 @@ sed -E 's/chr([1-7][ABD])/ta\1/' ltr-wheat-density-circos.txt > x6-ltr-rollag-de
 awk 'BEGIN {max=0; min=1e18} {if ($4>max) max=$4; if ($4<min) min=$4} END {print "Max Density:", max; print "Min Density:", min}' x6-ltr-rollag-density
 ```
 
+# 7. High Confidence Gene Density
+### Assuming you already have wheat.high.gff3,
+### this command formatted for downstream visualization in tools such as Circos.:
+
+```bash
+## 1. Extract Gene Coordinates
+```bash
+# Extract HC genes (chromosome, start, end)
+awk '$3 == "gene"' wheat.high.gff3 \
+    | awk '{print $1, $4, $5}' OFS="\t" > high-confidence-genes-wheat.bed
+
+## 2. Prepare Genome File
+# Extract chromosome sizes
+grep "^##sequence-region" wheat.high.gff3 \
+    | awk '{print $2, $4}' OFS="\t" > genome-wheat-file.txt
+
+# Keep only chr* contigs present in the GFF
+grep "^chr" high-confidence-genes-wheat.bed > filtered-high-confidence-genes-wheat.bed
+awk '{print $1}' filtered-high-confidence-genes-wheat.bed | sort | uniq > bed-contigs-wheat.txt
+grep -Ff bed-contigs-wheat.txt genome-wheat-file.txt > filtered-genome-wheat-file.txt
+
+## 3. Calculate Gene Density in 1Mb Windows
+bedtools makewindows -g filtered-genome-wheat-file.txt -w 1000000 \
+  | bedtools intersect -a - -b filtered-high-confidence-genes-wheat.bed -c \
+  > gene-density-per-bin-wheat.bed
+
+## 4. Standardize Chromosome Names (Circos compatibility)
+# Change chr* → ta* format
+sed 's/^chr/ta/' gene-density-per-bin-wheat.bed > ta-gene-density-per-bin-wheat.bed
+```
+
 Maintainer:
 
 Ruby Mijan
