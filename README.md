@@ -390,7 +390,7 @@ ideogram   = yes
 </highlights>
 ```
 
-## 3. Noncoding gene dentsity (infernal RNAs)
+## 4. Noncoding gene dentsity (infernal RNAs)
 ### Assuming you already generated updated_wheat_ncrna.bed (chrom  start  end),
 ### this command aggregates non-coding RNA counts into 100 kb windows for Circos:
 
@@ -417,7 +417,7 @@ ta1A 100000 199999 34
 ta1A 200000 299999 6
 ```
 
-## 3. Noncoding gene dentsity (infernal RNAs)
+## 5. Noncoding gene dentsity (infernal RNAs)
 ### Assuming you already generated wheat.fasta.2.7.7.80.10.50.500.dat,
 ### this command prepare BED Files for Genome-wide Density (Circos):
 
