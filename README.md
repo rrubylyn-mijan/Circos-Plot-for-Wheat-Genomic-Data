@@ -417,7 +417,7 @@ ta1A 100000 199999 34
 ta1A 200000 299999 6
 ```
 
-## 5. Noncoding gene dentsity (infernal RNAs)
+## 5. Noncoding gene density (infernal RNAs)
 ### Assuming you already generated wheat.fasta.2.7.7.80.10.50.500.dat,
 ### this command prepare BED Files for Genome-wide Density (Circos):
 
@@ -433,6 +433,36 @@ bedtools coverage -a wheat_genome_1Mb_windows.bed -b wheat_tandem_repeats.bed > 
 
 # Format for Circos:
 awk '{gsub(/^chr/, "ta", $1); print $1, $2, $3, $7}' wheat_tandem_repeat_density.txt > x5_tandem_repeat_density_wheat
+```
+
+# 6. LTR density
+### Assuming you already generated wheat.fasta.finder.combine.gff3 from LTR_FINDER_parallel,
+### this command prepare 1 Mb window density (bp per bin) for long_terminal_repeat features:
+
+```bash
+awk -v window=1000000 '
+$3 == "long_terminal_repeat" {
+    chr = $1
+    start = $4
+    end = $5
+    bin = int(start / window) * window
+    density[chr, bin] += (end - start + 1)
+}
+END {
+    for (key in density) {
+        split(key, keys, SUBSEP)
+        chr = keys[1]
+        bin_start = keys[2]
+        bin_end = bin_start + window
+        print chr, bin_start, bin_end, density[key]
+    }
+}' ltr-wheat.gff3 > ltr-wheat-density-circos.txt
+
+# Rename chr* to ta* (e.g., chr1A -> ta1A)
+sed -E 's/chr([1-7][ABD])/ta\1/' ltr-wheat-density-circos.txt > x6-ltr-rollag-density
+
+# Get min/max density
+awk 'BEGIN {max=0; min=1e18} {if ($4>max) max=$4; if ($4<min) min=$4} END {print "Max Density:", max; print "Min Density:", min}' x6-ltr-rollag-density
 ```
 
 Maintainer:
