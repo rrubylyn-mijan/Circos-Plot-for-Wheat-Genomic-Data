@@ -467,7 +467,7 @@ awk 'BEGIN {max=0; min=1e18} {if ($4>max) max=$4; if ($4<min) min=$4} END {print
 
 # 7. High Confidence Gene Density
 ### Assuming you already have wheat.high.gff3,
-### this command formatted for downstream visualization in tools such as Circos.:
+### this command is formatted for downstream visualization in tools such as Circos.:
 
 ```bash
 ## 1. Extract Gene Coordinates
@@ -494,6 +494,23 @@ bedtools makewindows -g filtered-genome-wheat-file.txt -w 1000000 \
 ## 4. Standardize Chromosome Names (Circos compatibility)
 # Change chr* → ta* format
 sed 's/^chr/ta/' gene-density-per-bin-wheat.bed > x7-high-confidence-gene-wheat-density
+```
+
+# 8. GC content distribution
+### Assuming you already have bed file using BEDTools,
+### this command is formatted for GC composition analysis between subgenomes:
+
+```bash
+ml bedtools2/2.31.1
+
+bedtools makewindows -g /directory/this/saved/wheat.fasta.fai -w 10000 > wheat-windows.bed
+bedtools nuc -fi /directory/this/saved/wheat.fasta -bed wheat-windows.bed > gc-content-wheat.bed
+
+## Extract GC Density Columns
+cut -f 1,2,3,5 gc-content-wheat.bed > gc-content-wheat-density-extracted.bed
+
+## Rename Chromosomes for Circos Compatibility
+sed 's/^chr/ta/' gc-content-wheat-density-extracted.bed > x8-gc-content-wheat-density
 ```
 
 Maintainer:
