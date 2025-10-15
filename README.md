@@ -493,7 +493,7 @@ bedtools makewindows -g filtered-genome-wheat-file.txt -w 1000000 \
 
 ## 4. Standardize Chromosome Names (Circos compatibility)
 # Change chr* → ta* format
-sed 's/^chr/ta/' gene-density-per-bin-wheat.bed > ta-gene-density-per-bin-wheat.bed
+sed 's/^chr/ta/' gene-density-per-bin-wheat.bed > x7-high-confidence-gene-wheat-density
 ```
 
 Maintainer:
