@@ -459,10 +459,10 @@ END {
 }' ltr-wheat.gff3 > ltr-wheat-density-circos.txt
 
 # Rename chr* to ta* (e.g., chr1A -> ta1A)
-sed -E 's/chr([1-7][ABD])/ta\1/' ltr-wheat-density-circos.txt > x6-ltr-rollag-density
+sed -E 's/chr([1-7][ABD])/ta\1/' ltr-wheat-density-circos.txt > x6-ltr-wheat-density
 
 # Get min/max density
-awk 'BEGIN {max=0; min=1e18} {if ($4>max) max=$4; if ($4<min) min=$4} END {print "Max Density:", max; print "Min Density:", min}' x6-ltr-rollag-density
+awk 'BEGIN {max=0; min=1e18} {if ($4>max) max=$4; if ($4<min) min=$4} END {print "Max Density:", max; print "Min Density:", min}' x6-ltr-wheat-density
 ```
 
 # 7. High Confidence Gene Density
