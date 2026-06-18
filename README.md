@@ -15,7 +15,7 @@ conda activate /directory/saved/circos_env
 
 or
 
-source /apps/spack-managed/gcc-11.3.1/miniconda3-24.3.0-tfxfbqlz7yglkzf3fhpokdrwkakbluqw/etc/profile.d/conda.sh
+source /apps/spack-managed-x86_64_v3-v1.1/gcc-11.5.0/miniconda3-25.5.1-75jzng7vis4hwdk3kzz5ywb4an56yzzz/etc/profile.d/conda.sh
 conda activate /directory/saved/circos_env
 ```
 
