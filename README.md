@@ -24,36 +24,77 @@ conda activate /directory/saved/circos_env
 ```bash
 cd /directory/this/saved/circos_plot/
 
-### Example config (heatmap_circos_wheat.conf):
+### Create a circos configuration
+nano 24x-heatmap-circos-wheat.conf
+
+# color
+<colors>
+    aquamarine = 137,236,218
+    m_aqua     = 102,178,178
+    turq       = 0,128,128
+    l_teal     = 0,102,102
+    teal       = 0,76,76
+</colors>
 
 # ideogram
 <ideogram>
+
 <spacing>
 default = 0.005r
+<pairwise ta7D ta1A>
+spacing = 8r
+</pairwise>
 </spacing>
 
-radius           = 0.90r
-thickness        = 20p
+# Ideogram position, fill and outline
+radius           = dims(image,radius) - 290p
+thickness        = 60p
 fill             = yes
-stroke_color     = 127,255,212
-stroke_thickness = 2p
+stroke_color     = 137,236,218
+stroke_thickness = 4p
 
+# Minimum definition for ideogram labels.
 show_label       = yes
+
+# see etc/fonts.conf for list of font names
 label_font       = default
-label_radius     = dims(image,radius) - 60p
-label_size       = 30
+label_radius     = dims(image,radius) - 100p
+label_size       = 50
 label_parallel   = yes
+
+# Bands
+show_bands            = yes
+fill_bands            = yes
+band_stroke_thickness = 2
+band_stroke_color     = white
+band_transparency     = 0
+
 </ideogram>
 
-# ticks
+#ticks
 show_ticks          = yes
 show_tick_labels    = yes
 
 <ticks>
-radius           = 1r
+radius           = dims(image,radius) - 270p
 color            = black
 thickness        = 2p
+
+# the tick label is derived by multiplying the tick position
+# by 'multiplier' and casting it in 'format':
+#
+# sprintf(format,position*multiplier)
+#
+
 multiplier       = 1e-6
+
+# %d   - integer
+# %f   - float
+# %.1f - float with one decimal
+# %.2f - float with two decimals
+#
+# for other formats, see https://perldoc.perl.org/functions/sprintf.html
+
 format           = %d
 
 <tick>
@@ -63,49 +104,359 @@ size           = 10p
 
 <tick>
 spacing        = 25u
-size           = 15p
+size           = 30p
 show_label     = yes
-label_size     = 20p
-label_offset   = 10p
+label_size     = 30p
+label_offset   = 30p
 format         = %d
 </tick>
+
 </ticks>
 
-karyotype   = x_wheat_karyotype.txt
+karyotype   = x1-wheat-karyotype
 
 <image>
-dir = /directory/this/saved/circos_plot
-file  = circos_4.png
-radius         = 1500p
+dir = /directory/this/saved/circos_plot_wheat
+# dir = /mmfs1/scratch/first.lastname/circos_plot_glenn
+file  = 24circos-wheat.png
+# radius of inscribed circle in image
+radius         = 2000p
 background     = white
-angle_offset   = -90
+# by default angle=0 is at 3 o'clock position
+angle_offset   = -82
 </image>
 
-chromosomes_units = 10000000
+chromosomes_units           = 10000000
 
 <highlights>
+
 <highlight>
-file       = x_final_glenn_filtered_output.txt
-fill_color = yes
-ideogram   = yes
+file       = x2-subtelo-wheat-filtered-output-100Mb
+fill_color = yes  # Default fill color in case it's not defined in the file
+ideogram = yes
 </highlight>
+
 </highlights>
 
+<plots>
+
+<plot>
+type        = tile
+file        = x3-centromere-wheat-highlights
+r1          = dims(image,radius) - 420p
+r0          = dims(image,radius) - 480p
+orientation = in
+thickness   = 60p
+
+layers_overflow = collapse
+layers = 1
+</plot>
+
+<plot>
+type        = heatmap
+file        = x4-ncrna-wheat-100kb-windows
+r1          = dims(image,radius) - 540p
+r0          = dims(image,radius) - 600p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0
+max         = 10
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x5-tandem-repeat-density-wheat-density
+r1          = dims(image,radius) - 660p
+r0          = dims(image,radius) - 720p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0.00
+max         = 0.10
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x6-ltr-wheat-density
+r1          = dims(image,radius) - 780p
+r0          = dims(image,radius) - 840p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 936
+max         = 202525
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x7-high-confidence-gene-wheat-density
+r1          = dims(image,radius) - 900p
+r0          = dims(image,radius) - 960p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x8-gc-content-wheat-density
+r1          = dims(image,radius) - 1020p
+r0          = dims(image,radius) - 1080p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0.400000
+max         = 0.699800
+thickness = 60p
+</plot>
+
+</plots>
+
+<links>
+
+<link>
+
+ribbon = yes
+flat = yes
+file   = x9-collinearity-links-wheat
+
+radius        = dims(image,radius) - 1140p
+bezier_radius = 0r
+
+stroke_thickness = 0
+
+<rules>
+    <rule>
+        condition = 1
+        # use the "color=" value from the links file as the fill color
+        color = eval(var(color))
+    </rule>
+</rules>
+
+</link>
+
+</links>
+
 <<include etc/colors_fonts_patterns.conf>>
+
+<<include etc/housekeeping.conf>>
+[first.lastname@atlas-login-2 circos_plot_wheat]$ cat 24x-heatmap-circos-wheat.conf
+# color
+<colors>
+    aquamarine = 137,236,218
+    m_aqua     = 102,178,178
+    turq       = 0,128,128
+    l_teal     = 0,102,102
+    teal       = 0,76,76
+</colors>
+
+# ideogram
+<ideogram>
+
+<spacing>
+default = 0.005r
+<pairwise ta7D ta1A>
+spacing = 8r
+</pairwise>
+</spacing>
+
+# Ideogram position, fill and outline
+radius           = dims(image,radius) - 290p
+thickness        = 60p
+fill             = yes
+stroke_color     = 137,236,218
+stroke_thickness = 4p
+
+# Minimum definition for ideogram labels.
+show_label       = yes
+
+# see etc/fonts.conf for list of font names
+label_font       = default
+label_radius     = dims(image,radius) - 100p
+label_size       = 50
+label_parallel   = yes
+
+# Bands
+show_bands            = yes
+fill_bands            = yes
+band_stroke_thickness = 2
+band_stroke_color     = white
+band_transparency     = 0
+
+</ideogram>
+
+#ticks
+show_ticks          = yes
+show_tick_labels    = yes
+
+<ticks>
+radius           = dims(image,radius) - 280p
+color            = black
+thickness        = 2p
+
+# the tick label is derived by multiplying the tick position
+# by 'multiplier' and casting it in 'format':
+#
+# sprintf(format,position*multiplier)
+#
+
+multiplier       = 1e-6
+
+# %d   - integer
+# %f   - float
+# %.1f - float with one decimal
+# %.2f - float with two decimals
+#
+# for other formats, see https://perldoc.perl.org/functions/sprintf.html
+
+format           = %d
+
+<tick>
+spacing        = 10u
+size           = 10p
+</tick>
+
+<tick>
+spacing        = 25u
+size           = 30p
+show_label     = yes
+label_size     = 30p
+label_offset   = 30p
+format         = %d
+</tick>
+
+</ticks>
+
+karyotype   = x1-wheat-karyotype
+
+<image>
+dir = /directory/this/saved/circos_plot_wheat
+# dir = /mmfs1/scratch/first.lastname/circos_plot_glenn
+file  = 24circos-wheat.png
+# radius of inscribed circle in image
+radius         = 2000p
+background     = white
+# by default angle=0 is at 3 o'clock position
+angle_offset   = -82
+</image>
+
+chromosomes_units           = 10000000
+
+<highlights>
+
+<highlight>
+file       = x2-subtelo-wheat-filtered-output-100Mb
+fill_color = yes  # Default fill color in case it's not defined in the file
+ideogram = yes
+</highlight>
+
+</highlights>
+
+<plots>
+
+<plot>
+type        = tile
+file        = x3-centromere-wheat-highlights
+r1          = dims(image,radius) - 420p
+r0          = dims(image,radius) - 480p
+orientation = in
+thickness   = 60p
+
+layers_overflow = collapse
+layers = 1
+</plot>
+
+<plot>
+type        = heatmap
+file        = x4-ncrna-wheat-100kb-windows
+r1          = dims(image,radius) - 540p
+r0          = dims(image,radius) - 600p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0
+max         = 10
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x5-tandem-repeat-density-wheat-density
+r1          = dims(image,radius) - 660p
+r0          = dims(image,radius) - 720p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0.00
+max         = 0.10
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x6-ltr-wheat-density
+r1          = dims(image,radius) - 780p
+r0          = dims(image,radius) - 840p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 936
+max         = 202525
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x7-high-confidence-gene-wheat-density
+r1          = dims(image,radius) - 900p
+r0          = dims(image,radius) - 960p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+thickness = 60p
+</plot>
+
+<plot>
+type        = heatmap
+file        = x8-gc-content-wheat-density
+r1          = dims(image,radius) - 1020p
+r0          = dims(image,radius) - 1080p
+color       = aquamarine, m_aqua, turq, l_teal, teal
+min         = 0.400000
+max         = 0.699800
+thickness = 60p
+</plot>
+
+</plots>
+
+<links>
+
+<link>
+
+ribbon = yes
+flat = yes
+file   = x9-collinearity-links-wheat
+
+radius        = dims(image,radius) - 1140p
+bezier_radius = 0r
+
+stroke_thickness = 0
+
+<rules>
+    <rule>
+        condition = 1
+        # use the "color=" value from the links file as the fill color
+        color = eval(var(color))
+    </rule>
+</rules>
+
+</link>
+
+</links>
+
+<<include etc/colors_fonts_patterns.conf>>
+
 <<include etc/housekeeping.conf>>
 ```
 
 ## 3. Run Circos Commands
 ```bash
-circos -conf 1heatmap_circos_wheat.conf
+circos -conf 24x-heatmap-circos-wheat.conf
 ```
 
 ## 4. Example Input Data
-x_sumai3_gc_content_density_extracted.bed
+x_wheat_gc_content_density_extracted.bed
 
 ## 5. Transfer Output from HPC to Local
 ```bash
-scp firstname.lastname@atlas-login.hpc.msstate.edu:/directory/this/saved/circos_plot_sumai3/circos_wheat_17.png C:\Users\firstname.lastname\Documents\Circos_plot\
+scp firstname.lastname@atlas-login.hpc.msstate.edu:/directory/this/saved/circos_plot_wheat/circos_wheat_17.png C:\Users\firstname.lastname\Documents\Circos_plot\
 ```
 
 # Data to prepare for Circos layers
