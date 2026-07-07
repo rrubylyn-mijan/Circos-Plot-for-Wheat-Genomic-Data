@@ -444,11 +444,102 @@ stroke_thickness = 0
 <<include etc/colors_fonts_patterns.conf>>
 
 <<include etc/housekeeping.conf>>
+
+# Run Circos Commands
+circos -conf 24x-heatmap-circos-wheat.conf
 ```
 
-## 3. Run Circos Commands
+## 3. Scaling a Circos plot from 2000p to 6000p
+This Python script automatically scales all pixel-based values ending in p inside a Circos configuration file. It also scales label_size values and updates the output PNG filename. This is useful when a Circos plot needs to be exported at a much higher resolution for publication or journal requirements.
 ```bash
-circos -conf 24x-heatmap-circos-wheat.conf
+# Input
+Original Circos configuration file:
+24x-heatmap-circos-wheat.conf
+
+# Output
+- Scaled Circos configuration file:
+60x-heatmap-circos-wheat.conf
+
+Expected Circos image output:
+60circos-wheat.png
+
+# Script
+## Create the script:
+nano scale_circos_2000_to_6000.py
+
+## Paste the following:
+import re
+
+input_conf = "24x-heatmap-circos-wheat.conf"
+output_conf = "60x-heatmap-circos-wheat.conf"
+
+scale = 3.0   # 2000p -> 6000p
+
+with open(input_conf, "r") as f:
+    text = f.read()
+
+# -----------------------------
+# Scale all pixel values (p)
+# -----------------------------
+def scale_p(match):
+    value = float(match.group(1))
+    new_value = value * scale
+
+    if new_value.is_integer():
+        return f"{int(new_value)}p"
+    else:
+        return f"{new_value:.2f}p"
+
+text = re.sub(
+    r'(\d+(?:\.\d+)?)p',
+    scale_p,
+    text
+)
+
+# -----------------------------
+# Scale label_size without p
+# -----------------------------
+def scale_label(match):
+    value = float(match.group(1))
+    new_value = value * scale
+
+    if new_value.is_integer():
+        return f"label_size       = {int(new_value)}"
+    else:
+        return f"label_size       = {new_value:.2f}"
+
+text = re.sub(
+    r'label_size\s+=\s+(\d+(?:\.\d+)?)\s*$',
+    scale_label,
+    text,
+    flags=re.MULTILINE
+)
+
+# -----------------------------
+# Rename output file
+# -----------------------------
+text = text.replace(
+    "file  = 24circos-wheat.png",
+    "file  = 60circos-wheat.png"
+)
+
+# -----------------------------
+# Save scaled config
+# -----------------------------
+with open(output_conf, "w") as f:
+    f.write(text)
+
+print("Saved:", output_conf)
+print("Scaled 2000p -> 6000p")
+
+# Run the scaling script:
+python scale_circos_2000_to_6000.py
+
+# Generate the Circos plot:
+circos -conf 60x-heatmap-circos-wheat.conf
+
+# Expected output in pixels:
+12000 x 12000
 ```
 
 ## 4. Example Input Data
